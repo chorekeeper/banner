@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Management Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .cover {
+      min-height: 100vh;
+      background: linear-gradient(to right, #4A90E2, #FFFACD);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 1000px;
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 25px 30px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .welcome h1 {
+      font-size: 1.1rem;
+      color: #333;
+      margin-bottom: 5px;
+    }
+
+    .welcome p {
+      font-size: 0.85rem;
+      color: #666;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .search {
+      position: relative;
+      width: 280px;
+    }
+
+    .search i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .search input {
+      width: 100%;
+      padding: 10px 15px 10px 35px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .search input:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    }
+
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      
+    }
+
+    .sidebar {
+      position: absolute;
+      left: 30px;
+      top: 100px;
+      width: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    .sidebar-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: #e3f2fd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #007bff;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-icon:hover {
+      background: #007bff;
+      color: white;
+    }
+
+    .profile-section {
+      padding: 30px;
+      position: relative;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .profile-img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .profile-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-info h2 {
+      font-size: 1.1rem;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+
+    .profile-info p {
+      color: #7f8c8d;
+      font-size: 0.85rem;
+    }
+
+    .edit-btn {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 15px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+      background: #0069d9;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .sidebar {
+        left: 15px;
+        top: 80px;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    }
+
+    select.form-control {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236c757d' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 14px;
+    }
+
+    .email-section {
+      margin-top: 30px;
+    }
+
+    .email-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+
+    .email-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 15px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .email-verified {
+      color: #4CAF50;
+      font-size: 1.2rem;
+    }
+
+    .email-item p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .add-email {
+      display: inline-block;
+      background: #e3f2fd;
+      color: #007bff;
+      padding: 8px 15px;
+      border-radius: 8px;
+      font-weight: 500;
+      margin-top: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .add-email:hover {
+      background: #bbdefb;
+    }
+
+    @media (max-width: 480px) {
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .search {
+        width: 100%;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cover">
+    <div class="card">
+      <div class="sidebar">
+        <div class="sidebar-icon">
+          <i class="fas fa-th"></i>
+        </div>
+        <div class="sidebar-icon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="sidebar-icon">
+          <i class="fas fa-cog"></i>
+        </div>
+      </div>
+      
+      <div class="card-header">
+        <div class="welcome">
+          <h1>Welcome, Toro</h1>
+          <p>Wed, 06 May 2025</p>
+        </div>
+        <div class="header-actions">
+          <div class="search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search...">
+          </div>
+          <div class="user-avatar">
+            <img src="./IMGs/kuro1.jpg" style="width: 70px;" alt="Kuro">
+          </div>
+        </div>
+      </div>
+      
+      <div class="profile-section">
+        <button class="edit-btn">Edit</button>
+        
+        <div class="profile-header">
+          <div class="profile-img">
+            <img src="./IMGs/toro1.jpg" alt="Toro">
+          </div>
+          <div class="profile-info">
+            <h2>Toro Inoue</h2>
+            <p>toroinoue@gmail.com</p>
+          </div>
+        </div>
+        
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="fullname">Fullname</label>
+            <input type="text" id="fullname" class="form-control" placeholder="Your First Name">
+          </div>
+          
+          <div class="form-group">
+            <label for="middlename">Middle Name</label>
+            <input type="text" id="middlename" class="form-control" placeholder="Your First Name">
+          </div>
+          
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender" class="form-control">
+              <option value="">Your Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          
+          
+          <div class="form-group">
+            <label for="country">Country</label>
+            <select id="country" class="form-control">
+              <option value="">Your Country</option>
+              <option value="us">United States</option>
+              <option value="uk">United Kingdom</option>
+              <option value="ca">Canada</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="language">Language</label>
+            <select id="language" class="form-control">
+              <option value="">Select Language</option>
+              <option value="en">English</option>
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="timezone">Time Zone</label>
+            <select id="timezone" class="form-control">
+              <option value="">Time-zone</option>
+              <option value="est">Eastern Standard Time</option>
+              <option value="cst">Central Standard Time</option>
+              <option value="pst">Pacific Standard Time</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="email-section">
+          <h3>My email Address</h3>
+          <div class="email-item">
+            <i class="fas fa-check-circle email-verified"></i>
+            <div>
+              <p>toroinoue@gmail.com</p>
+              <p>1 minute's ago</p>
+            </div>
+          </div>
+          <div class="add-email">+ Add Email Address</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const today = new Date();
+      const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
+      const formattedDate = today.toLocaleDateString('en-US', options);
+      
+      document.querySelector('.welcome p').textContent = formattedDate;
+      
+      document.querySelector('.edit-btn').addEventListener('click', function() {
+        this.textContent = this.textContent === 'Edit' ? 'Save' : 'Edit';
+        this.style.backgroundColor = this.textContent === 'Save' ? '#28a745' : '#007bff';
+      });
+      
+      document.querySelector('.add-email').addEventListener('click', function() {
+        const newEmail = prompt('Enter new email address:');
+        if (newEmail && newEmail.includes('@')) {
+          const emailSection = document.querySelector('.email-section');
+          const newEmailItem = document.createElement('div');
+          newEmailItem.className = 'email-item';
+          newEmailItem.innerHTML = `
+            <i class="fas fa-check-circle email-verified"></i>
+            <div>
+              <p>${newEmail}</p>
+              <p>Just now</p>
+            </div>
+          `;
+          emailSection.insertBefore(newEmailItem, this);
+        } else if (newEmail) {
+          alert('Please enter a valid email address');
+        }
+      });
+      
+      document.querySelectorAll('.sidebar-icon').forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateX(5px)';
+        });
+        
+        icon.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateX(0)';
+        });
+      });
+      
+      const statusDot = document.querySelector('.welcome p');
+      let pulse = true;
+      
+      setInterval(() => {
+        statusDot.style.color = pulse ? '#4CAF50' : '#28a745';
+        pulse = !pulse;
+      }, 2000);
+    });
+    
+
+  </script>
+</body>
+</html>
